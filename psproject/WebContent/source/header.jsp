@@ -36,8 +36,9 @@ $(function() {
                       <li><a href="logout">로그아웃</a></li>
                       </c:if>
                     </ul>
-                    <form action="search" method="get" class="search-box">
+                    <form action="list.do" method="get" class="search-box">
                       <input type="text" class="text search-input" name="search" placeholder="지역을 입력하세요." />
+                      <input type="hidden" name="type" value="5">
                     </form>
                   </nav>
                 </span>
@@ -64,13 +65,13 @@ $(function() {
                   <a class="nav-link work" href="">빈 방 검색</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="spa.do">스파 펜션</a>
+                  <a class="nav-link" href="list.do?type=2">스파 펜션</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="full.do">풀빌라 펜션</a>
+                  <a class="nav-link" href="list.do?type=3">풀빌라 펜션</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="work.do">워크샾/MT 펜션</a>
+                  <a class="nav-link" href="list.do?type=4">워크샾/MT 펜션</a>
                 </li>
               </ul>
             </div>

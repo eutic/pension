@@ -76,49 +76,87 @@ public static PensionDao dao = new PensionDao();
 		}
 		return list;
 	}
-	
-	public ArrayList<PensionVo> getList(String pstitle, String preaddr) {
-		PensionVo vo = null;
-		String sql = "select * from ( " + 
-				"    SELECT ORIDX,PSIDX,PREADDR,PSURL,PSTITLE,( " + 
-				"        select min(week) from room r " + 
-				"        join charge c on r.rmidx = c.rmidx " + 
-				"        where p.psidx = r.psidx " + 
-				"        and week <> 0 and r.psidx = p.psidx group by r.psidx) " + 
-				"    as min_week from pension p order by 1 desc) " + 
-				"WHERE PSTITLE LIKE ? OR PREADDR LIKE ? " + 
-				"ORDER BY PSIDX DESC";
-		Connection conn;
-		PreparedStatement pstmt;
-		ResultSet rs;
-		ArrayList<PensionVo> searchList = new ArrayList<>();
+	public int selectPensionCount(String search, int type) {
+		StringBuilder sql = new StringBuilder();
+		
+		sql.append("SELECT count(*) FROM ( ");
+		sql.append("SELECT oridx,psidx,preaddr,pstitle, ");
+		sql.append("(SELECT MIN(RMSIZE) FROM ROOM R ");
+		sql.append("WHERE R.PSIDX = P.PSIDX GROUP BY PSIDX) AS RMSIZE ");
+		sql.append("FROM pension P ");
+		sql.append("WHERE preaddr like '%"+ search +"%' ");
+		if(type == 2 )
+			sql.append("AND PSTITLE LIKE '%스파%' "); //
+		if(type == 3 )
+			sql.append("AND PSTITLE LIKE '%풀빌라%' "); //
+		
+		sql.append(") ");
+		if(type == 4)
+			sql.append(" WHERE RMSIZE >= 30 "); //
+		Connection conn = DBManager.getConnection();
 		try {
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "%" + pstitle + "%");
-			pstmt.setString(2, "%" + preaddr + "%");
-			rs = pstmt.executeQuery();
-
-			searchList = new ArrayList<PensionVo>();
+			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+			ResultSet rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				return rs.getInt(1);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public List<PensionVo> selectPension(String search, int type, int from, int to) {
+		StringBuilder sql = new StringBuilder();
+		
+		sql.append("SELECT * FROM ( ");
+		sql.append("SELECT oridx,psidx,preaddr,pstitle, RMSIZE, ROWNUM RN FROM ( ");
+		sql.append("SELECT oridx,psidx,preaddr,pstitle, ");
+		sql.append("(SELECT MIN(RMSIZE) FROM ROOM R ");
+		sql.append("WHERE R.PSIDX = P.PSIDX GROUP BY PSIDX) AS RMSIZE ");
+		sql.append("FROM pension P ");
+		sql.append("WHERE preaddr like '%"+ search +"%' ");
+		if(type == 2 )
+			sql.append("AND PSTITLE LIKE '%스파%' "); //
+		if(type == 3 )
+			sql.append("AND PSTITLE LIKE '%풀빌라%' "); //
+		
+		sql.append(") ");
+		if(type == 4)
+			sql.append(" WHERE RMSIZE >= 30 "); //
+		
+		sql.append(") ");
+		sql.append("WHERE RN BETWEEN ? AND ? ");
+		sql.append("ORDER BY PSIDX DESC ");
+		
+		ArrayList<PensionVo> list = new ArrayList<>();
+		Connection conn = DBManager.getConnection();
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+			pstmt.setInt(1, from);
+			pstmt.setInt(2, to);
+			ResultSet rs = pstmt.executeQuery();
+			
 			while (rs.next()) {
-				vo = new PensionVo();
+				PensionVo vo = new PensionVo();
 				vo.setOridx(rs.getString(1));
 				vo.setPsidx(rs.getInt(2));
 				vo.setPreaddr(rs.getString(3));
-				vo.setPsurl(rs.getString(4));
-				vo.setPstitle(rs.getString(5));
-				vo.setLowPrice(rs.getInt(6));
-				searchList.add(vo);
+				vo.setPstitle(rs.getString(4));
+				list.add(vo);
+				
 			}
-			conn.close();
-			pstmt.close();
-			rs.close();
+			
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return searchList;
-
+		return list;
 	}
+
 	public PensionVo detailPension(String psidx) {
 		String sql = "select PSIDX,ORIDX, PSURL , PREADDR ,CURADDR,PSTITLE,CALLTEL,PICKUP,longitude,latitude from pension where psidx=? ";
 		PensionVo vo = null;
@@ -311,84 +349,9 @@ public static PensionDao dao = new PensionDao();
 		return pensions;
 	}
 	
-	public ArrayList<PensionVo> searchGetList(String pstitle,int begin,int end) {
-		PensionVo vo = null;
-		String sql = "select oridx,psidx,preaddr,psurl,pstitle,min_week,rn from( " + 
-				"    select oridx,psidx,preaddr,psurl,pstitle,min_week,rownum rn from ( " + 
-				"        SELECT ORIDX,PSIDX,PREADDR,PSURL,PSTITLE,( " + 
-				"            select min(week) from room r " + 
-				"            join charge c on r.rmidx = c.rmidx " + 
-				"            where p.psidx = r.psidx " + 
-				"            and week <> 0 and r.psidx = p.psidx group by r.psidx) " + 
-				"        as min_week from pension p order by 1 desc) " + 
-				"    WHERE PSTITLE LIKE ? OR PREADDR LIKE ? " + 
-				"    ORDER BY PSIDX DESC,rn) " + 
-				"where rn BETWEEN ? and ?";
-		Connection conn;
-		PreparedStatement pstmt;
-		ResultSet rs;
-		ArrayList<PensionVo> searchList = new ArrayList<>();
-		try {
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "%" + pstitle + "%");
-			pstmt.setString(2, "%" + pstitle + "%");
-			pstmt.setInt(3, begin);
-			pstmt.setInt(4, end);
-			rs = pstmt.executeQuery();
 
-			searchList = new ArrayList<PensionVo>();
-			while (rs.next()) {
-				vo = new PensionVo();
-				vo.setOridx(rs.getString(1));
-				vo.setPsidx(rs.getInt(2));
-				vo.setPreaddr(rs.getString(3));
-				vo.setPsurl(rs.getString(4));
-				vo.setPstitle(rs.getString(5));
-				vo.setLowPrice(rs.getInt(6));
-				searchList.add(vo);
-			}
-			conn.close();
-			pstmt.close();
-			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return searchList;
-
-	}
 	
-	public int searchGetTotal(String pstitle) {
-		int cnt = 0;
-		String sql = "select count(*) cnt from ( " + 
-				"    SELECT ORIDX,PSIDX,PREADDR,PSURL,PSTITLE,( " + 
-				"        select min(week) from room r " + 
-				"        join charge c on r.rmidx = c.rmidx " + 
-				"        where p.psidx = r.psidx " + 
-				"        and week <> 0 and r.psidx = p.psidx group by r.psidx) " + 
-				"    as min_week from pension p order by 1 desc) " + 
-				"WHERE PSTITLE LIKE ? OR PREADDR LIKE ? " + 
-				"ORDER BY PSIDX DESC";
-		Connection conn;
-		PreparedStatement pstmt;
-		ResultSet rs;
-		try {
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "%" + pstitle + "%");
-			pstmt.setString(2, "%" + pstitle + "%");
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				cnt = rs.getInt("cnt");
-			}
-			conn.close();
-			pstmt.close();
-			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return cnt;
-	}
+
 	
 	// 장바구니
 	public ArrayList<CartVo> getcakt(String email) {
@@ -495,219 +458,9 @@ public static PensionDao dao = new PensionDao();
 			rs.close();
 				
 			return ret;
-	}	
-	
-	// 스파,풀빌라 펜션
-	public List<PensionVo> readTitleList(String title) {
-		String sql = "select PSURL,PSTITLE,preaddr,psidx,oridx from PENSION WHERE pstitle like ? and ROWNUM < 9 order by psidx desc";
-		Connection conn;
-		PreparedStatement pstmt;
-
-		ResultSet rs;
-		PensionVo vo = null;
-		ArrayList<PensionVo> list = new ArrayList<>();
-		conn = DBManager.getConnection();
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "%"+title+"%");
-			rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-				vo = new PensionVo();
-				vo.setPsurl(rs.getString(1));
-				vo.setPstitle(rs.getString(2));
-				vo.setPreaddr(rs.getString(3));
-				vo.setPsidx(rs.getInt(4));
-				vo.setOridx(rs.getString(5));
-				list.add(vo);
-
-			}
-			conn.close();
-			pstmt.close();
-			rs.close();
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return list;
 	}
-	
-	public List<PensionVo> searchTitleList(String title,String search,int from,int to) {
-		String sql = "select oridx,psidx,preaddr,psurl,pstitle,rn from( " + 
-				"    select oridx,psidx,preaddr,psurl,pstitle,rn from( " + 
-				"        select oridx,psidx,preaddr,psurl,pstitle,rownum rn from pension " + 
-				"        WHERE PSTITLE LIKE ? " + 
-				"        ORDER BY PSIDX DESC) " + 
-				"    where preaddr like ?) " + 
-				"where rn BETWEEN ? and ?";
-		Connection conn;
-		PreparedStatement pstmt;
-		ResultSet rs;
-		PensionVo vo = null;
-		List<PensionVo> list = new ArrayList<>();
-		conn = DBManager.getConnection();
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "%"+title+"%");
-			pstmt.setString(2, "%"+search+"%");
-			pstmt.setInt(3, from);
-			pstmt.setInt(4, to);
-			rs = pstmt.executeQuery();
 
-			while (rs.next()) {
-				vo = new PensionVo();
-				vo.setOridx(rs.getString(1));
-				vo.setPsidx(rs.getInt(2));
-				vo.setPreaddr(rs.getString(3));
-				vo.setPsurl(rs.getString(4));
-				vo.setPstitle(rs.getString(5));
-				list.add(vo);
 
-			}
-			conn.close();
-			pstmt.close();
-			rs.close();
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return list;
-	}
-	
-	public int titleGetTotal(String title,String search) {
-		int cnt = 0;
-		String sql = "select count(*) cnt from ( " + 
-				"    SELECT ORIDX,PSIDX,PREADDR,PSURL,PSTITLE " + 
-				"    from pension p order by 1 desc) " + 
-				"WHERE PSTITLE LIKE ? and preaddr like ? "+ 
-				"ORDER BY PSIDX DESC";
-		Connection conn;
-		PreparedStatement pstmt;
-		ResultSet rs;
-		try {
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "%"+title+"%");
-			pstmt.setString(2, "%"+search+"%");
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				cnt = rs.getInt("cnt");
-			}
-			conn.close();
-			pstmt.close();
-			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return cnt;
-	}
-	
-	// 워크샾,MT 펜션
-	public List<PensionVo> readWorkList() {
-		String sql = "select psidx,pstitle,preaddr,oridx from PENSION join ( " + 
-				"    select psidx,count(*) from room  " + 
-				"    where rmsize>30 group by psidx order by 1 desc) " + 
-				"using(psidx) where ROWNUM < 9 order by psidx desc";
-		Connection conn;
-		PreparedStatement pstmt;
-		ResultSet rs;
-		PensionVo vo = null;
-		ArrayList<PensionVo> list = new ArrayList<>();
-		conn = DBManager.getConnection();
-		try {
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-				vo = new PensionVo();
-				vo.setPsidx(rs.getInt(1));
-				vo.setPstitle(rs.getString(2));
-				vo.setPreaddr(rs.getString(3));
-				vo.setOridx(rs.getString(4));
-				list.add(vo);
-			}
-			conn.close();
-			pstmt.close();
-			rs.close();
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return list;
-	}
-	
-	public List<PensionVo> searchWorkList(String search,int from,int to) {
-		String sql = "select psidx,pstitle,preaddr,oridx,rn from( " + 
-				"    select psidx,pstitle,preaddr,oridx,rownum rn from ( " + 
-				"        select psidx,pstitle,preaddr,oridx  " + 
-				"        from pension join ( " + 
-				"            select psidx,count(*)  " + 
-				"            from room where rmsize>30 group by psidx order by 1 desc) " + 
-				"        using(psidx) order by psidx desc) " + 
-				"    where preaddr like ?) " + 
-				"where rn between ? and ?";
-		Connection conn;
-		PreparedStatement pstmt;
-		ResultSet rs;
-		PensionVo vo = null;
-		List<PensionVo> list = new ArrayList<>();
-		conn = DBManager.getConnection();
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "%"+search+"%");
-			pstmt.setInt(2, from);
-			pstmt.setInt(3, to);
-			rs = pstmt.executeQuery();
 			
-			while (rs.next()) {
-				vo = new PensionVo();
-				vo.setPsidx(rs.getInt(1));
-				vo.setPstitle(rs.getString(2));
-				vo.setPreaddr(rs.getString(3));
-				vo.setOridx(rs.getString(4));
-				list.add(vo);
-			}
-			conn.close();
-			pstmt.close();
-			rs.close();
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return list;
-	}
-	
-	public int workGetTotal(String search) {
-		int cnt = 0;
-		String sql = "select count(*) cnt from( " + 
-				"    select psidx,pstitle,preaddr,oridx,rownum rn from ( " + 
-				"        select psidx,pstitle,preaddr,oridx  " + 
-				"        from pension join ( " + 
-				"            select psidx,count(*)  " + 
-				"            from room where rmsize>30 group by psidx order by 1 desc) " + 
-				"        using(psidx) order by psidx desc) " + 
-				"    where preaddr like ?)";
-		Connection conn;
-		PreparedStatement pstmt;
-		ResultSet rs;
-		try {
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "%"+search+"%");
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				cnt = rs.getInt("cnt");
-			}
-			conn.close();
-			pstmt.close();
-			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return cnt;
-	}
 }
