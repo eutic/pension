@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import common.ConstPool;
 import member.service.MemberServiceImpl;
 import member.vo.Member;
 @WebServlet("/mypage")
@@ -16,7 +17,7 @@ public class Mypage extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		req.getRequestDispatcher("member/mypage.jsp").forward(req, resp);
+		req.getRequestDispatcher(ConstPool.MEMBER_PATH+"member/mypage.jsp").forward(req, resp);
 	}
 
 	@Override

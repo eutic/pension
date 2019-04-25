@@ -28,7 +28,7 @@ $(function() {
                     <ul class="menu social">
                       <li><a href="" class="work">고객센터</a></li>
                       <c:if test="${member.email ==null}">
-                      <li><a href="terms">회원가입</a></li>
+                      <li><a href="signup1">회원가입</a></li>
                       <li><a href="login">로그인</a></li>
                       </c:if>
                       <c:if test="${member.email !=null}">

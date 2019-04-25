@@ -1,14 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
 <div>
-	<h3>이용안내</h3>
 	<ul>
 		<li>우리펜션에 등록된 펜션은 펜션주가 직접 운영하는 펜션입니다.</li>
 		<li>우리펜션은 예약 중개시스템만 운영하며 현장에서 일어나는 일에 대해 일체의 책임을 지지 않습니다.</li>
@@ -80,7 +72,6 @@
 <li>이용일 당일 예약 후 당일 취소한 경우, 이용일 당일 취소이며 환불이 불가능 합니다.</li>
 
 <li>영업시간 외 계좌이체 결제 후 환불요청시 입금자 "(주)올앳/(주)케이지이니시스"로 입금처리 됩니다.</li>
-
 
 </ul>
 </div>

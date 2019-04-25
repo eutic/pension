@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+/* common */
+.content{width: 998px; margin: 0 auto; padding: 30px 0;}
+.content h1{text-align: center;}
+.content > div{width: 600px; margin: 0 auto;}
+.content button {width: 100%; border: 0; background: #f03539; border-radius: 5px; box-shadow: 0px 0px 3px 1px #ddd; cursor: pointer; color: #eee;}
+.join_step{margin:0 auto; padding:0; height:166px;}
+.join_step li{margin: 0 10px; padding-top:10px; border:1px solid; border-radius:50%; width:130px ; height: 130px; float:left; list-style: none; text-align: center;}
+.join_step p:first-child{margin-bottom: 12px; font-family: fantasy; text-decoration: underline;}
+.join_on{background-color: #f03539; color:white;}
+
+/* signup1 */
+.terms_main textarea{width: 100%; height: 300px; padding: 8px; font-family: 'dotum'; font-size: .7em;}
+.t_input{text-align: right;}
+.t_input label{margin: 0 15px 5px;}
+.t_buttons{text-align: center;}
+.t_buttons button {width: 48%;  background: #eee; color: #333;} /* box-shadow: 1px 1px 7px 3px #ddd; */
+.t_buttons a:last-child button {background: #f03539; color: #eee }
+
+/* signup2 */
+.join_choice div {width: 50%; display: inline-block; text-align: center;}
+.join_choice button {width: 80%;}
+.join_choice div:last-child button {background: #808080;}
+
+/* signup3_1 */
+.signup-table{width: 100%;}
+.signup-table td{width: 500px; padding: 7px 0;}
+.signup-table td input {width: 100%; padding: 0 10px;}

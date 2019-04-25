@@ -8,16 +8,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+import common.ConstPool;
 import member.service.MemberServiceImpl;
 import member.vo.Member;
-@WebServlet("/join")
-public class joinServlet extends HttpServlet {
+@WebServlet("/signup3_2")
+public class Signup3_2 extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		req.getRequestDispatcher("member/join.jsp").forward(req, resp);
+		req.getRequestDispatcher(ConstPool.MEMBER_PATH+"/signup3_2.jsp").forward(req, resp);
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class joinServlet extends HttpServlet {
 		vo.setAddress(address);
 		vo.setTel(tel);
 		vo.setRating(rating);
-		MemberServiceImpl.getInstance().join(vo); 
+		MemberServiceImpl.getInstance().join(vo);
 		
 		resp.sendRedirect("login?email=" + email);
 		

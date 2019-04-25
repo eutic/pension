@@ -139,7 +139,7 @@ header .navbar {
       font-size: 40px; } }
 
 .top-bar {
-  background: #6610f2;
+  background: #f03539;
   padding: 10px 0; }
   .top-bar .social a, .top-bar .search-icon a {
     color: #fff;
@@ -614,7 +614,7 @@ textarea.form-control {
     border-radius: 50%;
     background: #e6e6e6; }
     .owl-carousel .owl-dots .owl-dot.active {
-      background: #6610f2; }
+      background: #f03539; }
 
 .owl-carousel.home-slider {
   z-index: 1;

@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import common.ConstPool;
+
 /**
  * 
  * @author 서재진
@@ -15,25 +17,12 @@ import javax.servlet.http.HttpServletResponse;
  * 
  */
 
-@WebServlet("/terms")
-public class Terms extends HttpServlet {
+@WebServlet("/signup1")
+public class Signup1 extends HttpServlet {
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		req.setCharacterEncoding("utf-8");
-		req.getRequestDispatcher("member/terms.jsp").forward(req, resp);
+		req.getRequestDispatcher(ConstPool.MEMBER_PATH+"/signup1.jsp").forward(req, resp);
 	}
-
-
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	   getInitParameter("chk");
-	}
-
-	
-	
-	
-	
 	
 }
 

@@ -52,7 +52,7 @@ window.onload = function(){
 .login_main button {width: 500px; height:70px; background-color: #6610f2 ;color:white;}
 .login_main button b{margin:0 auto; width: 200px}
 .login_table{margin:0 auto; }
-.login_main p{color: #6610f2 ;text-align:center; font-size:70px}
+.login_main p{color:#f03539 ;text-align:center; font-size:70px}
 .login_button{ font-size:20px}
 
 </style>

@@ -24,7 +24,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import common.DBManager;
 import pension.vo.CartVo;
@@ -112,7 +114,27 @@ public static PensionDao dao = new PensionDao();
 	public List<PensionVo> selectPension(String search, int type, int from, int to) {
 		StringBuilder sql = new StringBuilder();
 		
-		sql.append("SELECT * FROM ( ");
+		sql.append(" SELECT * FROM ( ");
+		sql.append(" SELECT ROWNUM RN, A.* FROM ( ");
+		sql.append(" SELECT P.PSIDX, ORIDX, PREADDR, PSTITLE, MIN(RMSIZE) RMSIZE, MIN(WEEK) LOWPRICE ");
+		sql.append(" FROM PENSION P ");
+		sql.append(" JOIN ROOM R ON R.PSIDX = P.PSIDX ");
+		sql.append(" JOIN CHARGE C ON R.RMIDX = C.RMIDX AND WEEK != 0 ");
+		
+		sql.append(" WHERE PREADDR LIKE '%" + search +"%' ");
+		if(type == 2 )
+		sql.append(" AND PSTITLE LIKE '%스파%' ");
+		if(type == 3 )
+		sql.append(" AND PSTITLE LIKE '%풀빌라%' ");
+		sql.append(" GROUP BY P.PSIDX, ORIDX, PREADDR, PSTITLE ");
+		sql.append("	    ) A ");
+		if(type == 4 )
+		sql.append(" WHERE RMSIZE > 30 ");
+		sql.append(" ORDER BY 2 ");
+		sql.append(" ) WHERE RN BETWEEN ? AND ? ");
+		
+		
+/*		sql.append("SELECT * FROM ( ");
 		sql.append("SELECT oridx,psidx,preaddr,pstitle, RMSIZE, ROWNUM RN FROM ( ");
 		sql.append("SELECT oridx,psidx,preaddr,pstitle, ");
 		sql.append("(SELECT MIN(RMSIZE) FROM ROOM R ");
@@ -130,7 +152,7 @@ public static PensionDao dao = new PensionDao();
 		
 		sql.append(") ");
 		sql.append("WHERE RN BETWEEN ? AND ? ");
-		sql.append("ORDER BY PSIDX DESC ");
+		sql.append("ORDER BY PSIDX DESC ");*/
 		
 		ArrayList<PensionVo> list = new ArrayList<>();
 		Connection conn = DBManager.getConnection();
@@ -142,10 +164,11 @@ public static PensionDao dao = new PensionDao();
 			
 			while (rs.next()) {
 				PensionVo vo = new PensionVo();
-				vo.setOridx(rs.getString(1));
-				vo.setPsidx(rs.getInt(2));
-				vo.setPreaddr(rs.getString(3));
-				vo.setPstitle(rs.getString(4));
+				vo.setOridx(rs.getString("oridx"));
+				vo.setPsidx(rs.getInt("psidx"));
+				vo.setPreaddr(rs.getString("preaddr"));
+				vo.setPstitle(rs.getString("pstitle"));
+				vo.setLowPrice(rs.getInt("lowprice"));
 				list.add(vo);
 				
 			}
@@ -157,72 +180,63 @@ public static PensionDao dao = new PensionDao();
 		return list;
 	}
 
-	public PensionVo detailPension(String psidx) {
-		String sql = "select PSIDX,ORIDX, PSURL , PREADDR ,CURADDR,PSTITLE,CALLTEL,PICKUP,longitude,latitude from pension where psidx=? ";
+	public List<Map<String, String>> detailPension(String psidx, String date) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" SELECT P.PSIDX, ORIDX , PREADDR ,CURADDR, PSTITLE, CALLTEL, PICKUP, LONGITUDE, LATITUDE, " );
+		sb.append("         R.RMIDX, RMTITLE, RMSIZE, RMPERMIN, RMPERMAX, RORDER, ");
+		sb.append("    (SELECT  \r\n" ); 
+		sb.append("        CASE WHEN TO_CHAR(TO_DATE(?),'D') < 6 THEN WEEK\r\n" ); 
+		sb.append("             WHEN TO_CHAR(TO_DATE(?),'D') = 6 THEN FRI\r\n" ); 
+		sb.append("        ELSE WEEKEND\r\n" ); 
+		sb.append("        END RESULT\r\n" ); 
+		sb.append(" FROM CHARGE WHERE RMIDX = 310\r\n" ); 
+		sb.append(" AND PERIOD = (\r\n" ); 
+		sb.append("    CASE WHEN \r\n" ); 
+		sb.append("        TO_CHAR(TO_DATE(?), 'MM') IN ('07', '08', '12', '01')\r\n" ); 
+		sb.append("        THEN 1\r\n" ); 
+		sb.append("    ELSE 0\r\n" ); 
+		sb.append("    END\r\n" ); 
+		sb.append("    )) AS PRICE\r\n" ); 
+		sb.append(" FROM PENSION P\r\n" ); 
+		sb.append(" JOIN ROOM R ON P.PSIDX = R.PSIDX\r\n" ); 
+		sb.append(" WHERE P.PSIDX = ?") ;
+		
 		PensionVo vo = null;
 		Connection conn;
 		PreparedStatement pstmt;
 		ResultSet rs;
+		List<Map<String, String>> list = new ArrayList<>();
 		try {
 			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, psidx);
+			pstmt = conn.prepareStatement(sb.toString());
+			pstmt.setString(1, date);
+			pstmt.setString(2, date);
+			pstmt.setString(3, date);
+			pstmt.setString(4, psidx);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				vo = new PensionVo();
-				vo.setPsidx(rs.getInt(1));
-				vo.setOridx(rs.getString(2));
-				vo.setPsurl(rs.getString(3));
-				vo.setPreaddr(rs.getString(4));
-				vo.setCuraddr(rs.getString(5));
-				vo.setPstitle(rs.getString(6));
-				vo.setCalltel(rs.getString(7));
-				vo.setPickup(rs.getString(8));
-				vo.setLongitude(rs.getString(9));
-				vo.setLatitude(rs.getString(10));
-			}
-			conn.close();
-			pstmt.close();
-			rs.close();
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return vo;
-	}
-
-	public ArrayList<RoomVo> detailRoom(String psidx) {
-		String sql = "SELECT PSIDX,RMIDX,RMTITLE,RMSIZE,RMPERMIN,RMPERMAX,RORDER FROM ROOM " + " WHERE PSIDX = ?  "
-				+ " ORDER BY RORDER  ";
-		RoomVo vo = null;
-		Connection conn;
-		PreparedStatement pstmt;
-		ResultSet rs;
-		ArrayList<RoomVo> RoomList = new ArrayList<>();
-		try {
-
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, psidx);
-			rs = pstmt.executeQuery();
-			RoomList = new ArrayList<RoomVo>();
-
-			while (rs.next()) {
-				vo = new RoomVo();
-				vo.setPsidx(rs.getInt(1));
-				vo.setRmidx(rs.getInt(2));
-				vo.setRmtitle(rs.getString(3));
-				vo.setRmsize(rs.getString(4));
-				vo.setRmpermin(rs.getInt(5));
-				vo.setRmpermax(rs.getInt(6));
-				vo.setRorder(rs.getInt(7));
-				vo.setChargeVos(getRoomCharge(rs.getInt(2)));
-				vo.setRoomimgVos(roominlist(rs.getInt(2)));
+				Map<String, String> map = new HashMap<>();
+				map.put("psidx", rs.getString("psidx"));
+				map.put("oridx", rs.getString("oridx"));
+				map.put("preaddr", rs.getString("preaddr"));
+				map.put("curaddr", rs.getString("curaddr"));
+				map.put("pstitle", rs.getString("pstitle"));
+				map.put("calltel", rs.getString("calltel"));
+				map.put("pickup", rs.getString("pickup"));
+				map.put("longitude", rs.getString("longitude"));
+				map.put("latitude", rs.getString("latitude"));
 				
-				RoomList.add(vo);
-
+				map.put("rmidx", rs.getString("rmidx"));
+				map.put("rmtitle", rs.getString("rmtitle"));
+				map.put("rmsize", rs.getString("rmsize"));
+				map.put("rmpermin", rs.getString("rmpermin"));
+				map.put("rmpermax", rs.getString("rmpermax"));
+				map.put("rorder", rs.getString("rorder"));
+				
+				map.put("price", rs.getString("price"));
+				list.add(map);
+				
 			}
 			conn.close();
 			pstmt.close();
@@ -232,73 +246,9 @@ public static PensionDao dao = new PensionDao();
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return RoomList;
+		return list;
 	}
 
-	public ArrayList<ChargeVo> getRoomCharge(int rmidx) {
-		String sql = "select rmidx,period,week,fri,weekend from charge where rmidx=?  ";
-		ChargeVo vo = null;
-		ResultSet rs;
-		Connection conn;
-		PreparedStatement pstmt;
-		ArrayList<ChargeVo> charge = new ArrayList<>();
-		try {
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, rmidx);
-			rs = pstmt.executeQuery();
-			charge = new ArrayList<ChargeVo>();
-			while (rs.next()) {
-				vo = new ChargeVo();
-				vo.setRmidx(rs.getInt(1));
-				vo.setPeriod(rs.getInt(2));
-				vo.setWeek(rs.getInt(3));
-				vo.setFri(rs.getInt(4));
-				vo.setWeekend(rs.getInt(5));
-				charge.add(vo);
-			}
-			conn.close();
-			pstmt.close();
-			rs.close();
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return charge;
-	}
-
-	public ArrayList<RoomimgVo> roominlist(int rmidx) {
-		String sql = "SELECT RMIDX, RMIMGIDX, RMIMGINURL  FROM ROOMIMG WHERE RMIDX =? ORDER BY RMIMGIDX  ";
-		RoomimgVo vo = null;
-		ArrayList<RoomimgVo> room = new ArrayList<>();
-		ResultSet rs;
-		Connection conn;
-		PreparedStatement pstmt;
-		try {
-			conn = DBManager.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, rmidx);
-			rs = pstmt.executeQuery();
-			room = new ArrayList<RoomimgVo>();
-			while (rs.next()) {
-				vo = new RoomimgVo();
-				vo.setRmidx(rs.getInt(1));
-				vo.setRmimgidx(rs.getInt(2));
-				vo.setRmimginurl(rs.getString(3));
-				room.add(vo);
-
-			}
-			conn.close();
-			pstmt.close();
-			rs.close();
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return room;
-	}
 
 	// index에 쓰이는 메서드
 	public List<PensionVo> indexList() {
@@ -349,9 +299,28 @@ public static PensionDao dao = new PensionDao();
 		return pensions;
 	}
 	
-
-	
-
+	public int roomImgCount(int rmidx) {
+		String sql = "SELECT COUNT(*) FROM ROOMIMG WHERE RMIDX = ?";
+		int i = 0;
+		ResultSet rs;
+		Connection conn;
+		PreparedStatement pstmt;
+		
+		try {
+			conn=DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, rmidx);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				i = rs.getInt(1);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return i;
+	}
 	
 	// 장바구니
 	public ArrayList<CartVo> getcakt(String email) {
@@ -459,8 +428,4 @@ public static PensionDao dao = new PensionDao();
 				
 			return ret;
 	}
-
-
-
-			
 }

@@ -1,7 +1,12 @@
 package common;
 
 import lombok.Data;
-
+/**
+ * 
+ * @author 
+ *  페이징을 위한 클래스
+ * 
+ */
 @Data
 public class Pagination {
 	

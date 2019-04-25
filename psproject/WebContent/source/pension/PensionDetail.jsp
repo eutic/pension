@@ -5,7 +5,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>${dao.pstitle}</title>
+<title>${list[0].pstitle}</title>
+<link href="images/icon/favicon.ico" rel="icon">
 <link
 	href="https://fonts.googleapis.com/css?family=Josefin+Sans:300, 400,700|Inconsolata:400,700"
 	rel="stylesheet">
@@ -18,163 +19,94 @@
 <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
 <link rel="stylesheet" href="fonts/jua/css/jua.css">
 <!-- Theme Style -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
 <link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/pension.css">
 <link rel="stylesheet" href="css/index.css">
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
-<script
-	src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
-
-
-<script src="js/pension.js">
-	
+<link rel="stylesheet" href="css/pension.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+<script>
+var web_path = "${web_path}";
+var oridx = "${dao.oridx}"
 </script>
-
+<script src="js/pension.js"></script>
 </head>
-
-
 <body>
 	<jsp:include page="../header.jsp"></jsp:include>
 	<div class="wrap">
-
-		<div class="pensioninfo">
-
-			<p>
-				<img
-					src="http://noldaga.shop/psproject/pension_img/${dao.oridx}/thumb.jpg"
-					width="500px" height="350px">
-			</p>
-
-
-			<ul class="psinfo">
-				<li><h3>${dao.pstitle}</h3></li>
-
-
-				<li>상세주소:&nbsp; 신주소${dao.preaddr} <br> 구주소:&nbsp;
-					${dao.curaddr}
-				<li>입실시간 : 14시 이후 퇴실시간 : 11시 이전</li>
-
-				<li>픽업: &nbsp; ${dao.pickup}</li>
-
-				<li>예약문의: &nbsp; ${dao.calltel}</li>
-
-			</ul>
-
-			<!-- 장바구니 담기 기능 -->
-			<c:if test="${member!=null}">
-			<div class="info2">
-				<form name="form1" method="get" 
-					action="insert.do">
-					<input type="hidden" name="psidx" value="${dao.psidx}"> <input
-						type="button" value="예약현황"> <input type="button"
-						value="예약하기"> <input type="submit" value="장바구니 담기">
-				</form>
-			</div>
-		</c:if>
-		</div>
-		
-						
-
-		<div class="con_tab_area">
-			<ul class="cont_tab">
-				<li><a href="?psidx=${param.psidx}&pension=room">객실안내 </a></li>
-				<li><a href="?psidx=${param.psidx}&pension=info">펜션정보</a></li>
-				<li><a href="?psidx=${param.psidx}&pension=map">찾아오는 길</a></li>
-				<li><a href="?psidx=${param.psidx}&pension=review">이용후기</a></li>
-				<li><a href="?psidx=${param.psidx}&pension=cancel">이용 및
-						취소안내</a></li>
-			</ul>
-		</div>
-
-		<c:choose>
-			<c:when
-				test="${param.pension == 'room' || empty param.pension || param.pension == 'roomlist'}">
-				<div class="roomlist">
-
-					<ul>
-						<c:forEach var="row" items="${room}">
-							<li><a
-								href="?psidx=${param.psidx}&pension=roomlist&rmidx=${row.rmidx}">${row.rmtitle}</a></li>
-						</c:forEach>
+		<div id="ex1" class="modal"></div>
+			<p><a href="#ex1" rel="modal:open" id="open"></a></p>
+				<div class="pensioninfo">
+					<img src="http://noldaga.shop/psproject/pension_img/${dao.oridx}/thumb.jpg">
+						<ul class="psinfo">
+							<li><h3>${dao.pstitle}</h3></li>
+							<li><h4>상세주소</h4></li>
+							<li>신주소 : ${dao.preaddr}</li>
+							<li>구주소 : ${dao.curaddr}</li>
+							<li><h4>입 / 퇴실시간</h4></li>
+							<li>14시 이후 / 11시 이전</li>
+							<li><h4>픽업</h4></li>
+							<li>${dao.pickup}</li>
+							<li><h4>예약문의</h4></li>
+							<li>${dao.calltel}</li>
+						</ul>
+	
+				<!-- 장바구니 담기 기능 -->
+				<c:if test="${member!=null}">
+				<div class="info2">
+					<form name="form1" method="get" action="insert.do">
+						<input type="hidden" name="psidx" value="${dao.psidx}"> 
+						<input type="button" value="예약현황"> 
+						<input type="button" value="예약하기">
+						<input type="submit" value="장바구니 담기">
+					</form>
+					</div>
+				</c:if>
+				</div>
+				<div class="con_tab_area">
+					<ul class="cont_tab .cont_tab_scrolled">
+						<li><a href="#anchorRoom">객실안내 </a></li>
+						<li><a href="#anchorMap">찾아오는 길</a></li>
+						<li><a href="#anchorCancel">이용 및 취소안내</a></li>
+						<li><a href="#anchorReview">이용후기</a></li>
 					</ul>
 				</div>
-
-
-				<div class="body1">
-
-					<div>
-						<div class="roomin">
-							<ul class="roominimg2">
-								<c:forEach var="row" items="${room}">
-
-									<c:forEach var="img" items="${row.roomimgVos}" varStatus="stat">
-										<c:if test="${rmIdx == img.rmidx}">
-
-											<li><img ${stat.index != 0 ? "style='display:none'" : "" }
-												src="http://noldaga.shop/psproject/pension_img/${dao.oridx}/${img.rmidx}/main/${img.rmimginurl}"
-												alt="이미지안나옴 ㅋㅋㅋ" data-order="${stat.index}"></li>
-
-										</c:if>
-									</c:forEach>
-								</c:forEach>
-							</ul>
-						</div>
-
-					
-						<div class="roominimg-wrapper">
-							<ul class="roominimg">
-								<c:forEach var="row" items="${room}">
-									<c:forEach var="img" items="${row.roomimgVos}" varStatus="stat">
-										<c:if test="${rmIdx == img.rmidx}">
-											<li><a href="javascript:void(0)"><img
-													src="http://noldaga.shop/psproject/pension_img/${dao.oridx}/${img.rmidx}/thumb/${img.rmimginurl}"
-													alt="이미지안나옴 ㅋㅋㅋ" data-order="${stat.index}"></a></li>
-
-										</c:if>
-									</c:forEach>
-								</c:forEach>
-
-							</ul>
-						</div>
-
-					</div>
-
-					<div >
-
-						<ul>
-						<c:forEach var="row" items="${room}">
-							<c:if test="${row.rmidx==param.rmidx}">
-							<li >${row.rmtitle}</li>
-							</c:if>
-						</c:forEach>
+			<div class="detail">
+				<h3 id="anchorRoom">객실 안내</h3>
+				<ul class="room " >
+				<c:forEach items="${list}" var="rm">
+					<li>
 						
+						<div class="img_wrap" data-rmidx="${rm.rmidx}">
+							<img src="${web_path}/${rm.oridx}/${rm.rmidx}/main/1.jpg">
+						</div>
+						<div>
+							<h4>${rm.rmtitle}</h4>
+							<p>가격 : ${rm.price}원</p>
+							<p>${rm.rmpermin}인 기준 / 최대 ${rm.rmpermax}</p>
+							<hr>
+							<button>예약</button>
+						</div>
+					</li>
+				</c:forEach>
+				</ul>
+				<h3 id="anchorMap">찾아 오시는 길</h3>
+					<jsp:include page="map.jsp"></jsp:include>
+				<h3 id="anchorCancel">이용 약관 및 취소 안내</h3>
+					<jsp:include page="Pensioncancel.jsp"></jsp:include>
+				
+				<h3>후기</h3>
+					<div id="anchorReview">
+						<ul>
+							<li>리뷰들</li>
+							<li>리뷰들</li>
+							<li>리뷰들</li>
 						</ul>
-
 					</div>
-
-				</div>
-			</c:when>
-			<%-- @author 최보송
-				@since 19.03.31
-				@카카오 지도 삽입
-				--%>
-
-			<c:when test="${param.pension == 'map'}">
-			<jsp:include page="map.jsp"></jsp:include>
-			</c:when>
-			<c:when test="${param.pension == 'review'}">
-				<h1>이용후기</h1>
-			<jsp:include page="review.jsp"></jsp:include>
-			</c:when>
-			<c:when test="${param.pension == 'cancel'}">
-				<jsp:include page="Pensioncancel.jsp"></jsp:include>
-			</c:when>
-		</c:choose>
-		<jsp:include page="pensionPrice.jsp"></jsp:include>
-
+			</div>
+		
 	</div>
 <jsp:include page="../footer.jsp"></jsp:include>
 </body>

@@ -2,7 +2,11 @@ package common;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
+/**
+ * 
+ * @author 
+ * 암호화
+ */
 public class SecurityUtil {
 	public static String encryptSHA256(String str){
 		String sha = "";

@@ -28,7 +28,7 @@
 		$(".page-link").on("click",()=>{
 			 location.href="list.do?search="+${sear};
 		})
-	})
+	});
 </script>
 <body>
 <div class="wrap">
@@ -44,15 +44,16 @@
 				<figcaption>
 					<h5><span>${row.pstitle}</span></h5>
 					<p>${row.preaddr}</p>
-					<a href="detail.do?psidx=${row.psidx}">View more</a>
+					<a href="detail.do?psidx=${row.psidx}&startdate=2019-04-22">View more</a>
 				</figcaption>
 			</figure>
 		</div>
 	</c:forEach>
+	
+	<hr>
 	<form name="form1" method="get" action="list.do" class="formsearch">
 		<div>
 			<h4>지역검색</h4>
-			<hr id="hr">
 			<select>
 				<option value="경기">경기</option>
 			</select> 
@@ -89,8 +90,8 @@
 	<div class="row">
 			<div class="col-md-12">
 				<h2 id="formsearch1">[${search}] 검색 결과</h2>
-				<h5>총 ${num}개의 펜션이 있습니다.</h4>
-				<hr id="hr">
+				<h5>총 ${num}개의 펜션이 있습니다.</h5>
+				<hr>
 			</div>
 		</div>	
 	<div class="row blog-entries">
@@ -104,7 +105,7 @@
 									<figcaption class="post-meta">
 										<h5><span>${i.pstitle}</span></h5>
 										<p>${i.preaddr}<br><span class="price">최저가 : ${i.lowPrice}원</span></p>
-										<a href="detail.do?psidx=${i.psidx}">View more</a>
+										<a href="detail.do?psidx=${i.psidx}&startdate=2019-04-22">View more</a>
 									</figcaption>
 								</div>
 							</figure>
@@ -157,54 +158,7 @@
             	</div>
 			</div>
 		</div>
-	
-	
-	
-	
-	<%-- 
-	<c:forEach var="row" items="${search}">
-		<div class="grid">
-			<figure class="effect-marley">
-				<img src="http://noldaga.shop/psproject/pension_img/${row.oridx}/thumb.jpg" alt="이미지안나옴 ㅋㅋㅋ">
-				<figcaption>
-					<h5><span>${row.pstitle}</span></h5>
-					<p>${row.preaddr}</p>
-					<a href="detail.do?psidx=${row.psidx}">View more</a>
-				</figcaption>
-			</figure>
-		</div>
-	</c:forEach>
-	<c:if test="${num==0}">
-		<div class="grid col-md-12 nosearch">
-			<div class="tbox">
-				<h2><span class="tcolor">[${sear}]</span>에 대한 <span class="tcolor">결과</span>가 없습니다.</h2>
-			</div>
-		</div>
-	</c:if>
-	<div class="row mt-5">
-		<div class="col-md-12 text-center">
-			<nav aria-label="Page navigation" class="text-center">
-			<ul class="pagination">
-				<c:if test="${page > 1}">
-					<li class="page-item  active"><a class="page-link" href="list.do?search=${sear}&search=검색&page=${page=1}">&lt;&lt;</a></li>
-					<li class="page-item  active"><a class="page-link" href="list.do?search=${sear}&search=검색&page=${fromPage-1}">&lt;</a></li>
-				</c:if>
-				<c:forEach begin="${fromPage}" end="${toPage}" step="1" var="i">
-					<li class="page-item"><a class="page-link" href="list.do?search=${sear}&search=검색&page=${i}">${i}</a></li>
-				</c:forEach>
-				<c:if test="${page < allPage}">
-					<li class="page-item  active"><a class="page-link" href="list.do?search=${sear}&search=검색&page=${toPage+1}">&gt;</a></li>
-					<li class="page-item  active"><a class="page-link" href="list.do?search=${sear}&search=검색&page=${page=allPage}">&gt;&gt;</a></li>
-				</c:if>
-				<c:if test="${num==0}">
-					<li class="page-item  active"><a class="page-link" href="list.do?search=${sear}&search=검색&page=${1}">&lt;</a></li>
-					<li class="page-item"><a class="page-link" href="list.do?search=${sear}&search=검색&page=${1}">1</a></li>
-					<li class="page-item  active"><a class="page-link" href="list.do?search=${sear}&search=검색&page=${1}">&gt;</a></li>
-				</c:if>
-			</ul>
-			</nav>
-		</div>
-	</div> --%>
+
 	<jsp:include page="../footer.jsp"></jsp:include>
 </div>
 </body>

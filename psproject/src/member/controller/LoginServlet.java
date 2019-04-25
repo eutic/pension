@@ -9,24 +9,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import common.ConstPool;
 import member.service.MemberServiceImpl;
 import member.vo.Member;
-
-/**
- * 
- * @author 서재진
- * 
- * 
- */
-
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.getRequestDispatcher("member/login.jsp").forward(req, resp);
-		
+		req.getRequestDispatcher(ConstPool.MEMBER_PATH+"/login.jsp").forward(req, resp);
 	}
-
+	
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String email = req.getParameter("email");
 		String pw = req.getParameter("pw");
@@ -34,7 +26,6 @@ public class LoginServlet extends HttpServlet{
 		
 		if (vo ==null) { // 로그인 실패
 			resp.sendRedirect("login?massage=fail");
-
 			
 		}else if(vo!=null){ // 로그인 성공
 			HttpSession session = req.getSession();
@@ -42,8 +33,5 @@ public class LoginServlet extends HttpServlet{
 			resp.sendRedirect("index");
 			
 		}
-	
-		
-		
 	}
 }
