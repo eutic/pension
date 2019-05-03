@@ -24,11 +24,11 @@
 	<link rel="stylesheet" href="css/index.css">
 </head>
 <script>
-	$(()=>{
+/* 	$(()=>{
 		$(".page-link").on("click",()=>{
 			 location.href="list.do?search="+${sear};
 		})
-	});
+	}) */;
 </script>
 <body>
 <div class="wrap">

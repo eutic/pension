@@ -4,6 +4,7 @@
 	<div id="map" style="width: 100%; height: 500px;"></div>
 				<script type="text/javascript"
 					src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b4c8099f570bef35fef193829962aa99">
+				/* 	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=91ecf3b6a2127e3d91b270d46b35f6c9"> */
 			</script>
 				<script>
 				//지도 생성

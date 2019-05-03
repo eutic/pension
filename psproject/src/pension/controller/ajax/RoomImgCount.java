@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import common.Util;
+import common.util.Util;
 import pension.dao.PensionDao;
 
 @WebServlet("/imgCnt")

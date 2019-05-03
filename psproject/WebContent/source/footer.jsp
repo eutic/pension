@@ -5,7 +5,7 @@
             <div class="col-md-8">
               <h3>About Us</h3>
               <p>서울특별시 강서구 화곡로 149 심당빌딩 
-              <br><a href="">박승호</a>ㅣ<a href="">서재진</a>ㅣ<a href="">염윤호</a>ㅣ<a href="">이충현</a>ㅣ<a href="">장우영</a>ㅣ<a href="">최보송</a>
+              <br><a href="">서재진</a>ㅣ<a href="">염윤호</a>ㅣ<a href="http://eutic.shop" target="_blank">이충현</a>ㅣ<a href="">장우영</a>ㅣ<a href="">최보송</a>
               <br>TEL : 02-1234-5678
               <br>E-mail : email@email.com</p>
             </div>

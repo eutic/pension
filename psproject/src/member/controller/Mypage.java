@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import common.ConstPool;
-import member.service.MemberServiceImpl;
+import common.util.ConstPool;
+import member.dao.MemberDao;
 import member.vo.Member;
 @WebServlet("/mypage")
 public class Mypage extends HttpServlet {
@@ -37,7 +37,7 @@ public class Mypage extends HttpServlet {
 		vo.setName(name);
 		vo.setAddress(address);
 		vo.setTel(tel);
-		MemberServiceImpl.getInstance().mypage(vo);
+		new MemberDao().mypage(vo);
 		req.getSession().setAttribute("member", vo);
 		
 		resp.sendRedirect("index");

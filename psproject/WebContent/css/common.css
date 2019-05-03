@@ -1,4 +1,9 @@
 @charset "UTF-8";
 
 .center{text-align: center;}
-.title404{margin: 300px 0;}
+.title404{padding: 50px 0 100px;}
+.logo-text{color:#f03539 ;font-size:70px; margin-bottom: 2.5rem;}
+.progress-icon-wrap {height: 80px;}
+.progress-icon-wrap a, .logo-text ~a{font-size: 30px;}
+
+.progress-icon {width: 55px; display: none;}

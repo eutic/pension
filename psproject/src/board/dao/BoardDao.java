@@ -7,19 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import board.service.BoardService;
 import board.vo.BoardVo;
-import common.DBManager;
+import common.util.DBManager;
+import common.util.Util;
 
 public class BoardDao  {
-	PreparedStatement pstmt = null;
-	Connection conn = null;
-	ResultSet rs = null ;
-	
-	public static BoardDao dao = new BoardDao();
-	public static BoardDao getInstance() {
-		return dao;
-	}
 	
 	
 	
@@ -29,16 +21,16 @@ public class BoardDao  {
 	}
 
 	public void modify(BoardVo vo) {
-		String sql = "UPDATE BOARD SET BOARDTITLE = ?, BOARDCONT = ?, REDATE = SYSDATE WHERE BOARDIDX = ?";
-		conn= DBManager.getConnection();
+		String sql = "UPDATE BOARD SET BOARDTITLE = ?, BOARDCONT = ? WHERE BOARDIDX = ?";
+		Connection conn= DBManager.getConnection();
 		try{
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			int idx = 0;
 			pstmt.setString(++idx, vo.getTitle());
 			pstmt.setString(++idx, vo.getCont());
-			pstmt.setInt(++idx, vo.getBoardIdx());
+			pstmt.setInt(++idx, vo.getIdx());
 			pstmt.executeUpdate();
-			DBManager.close(conn, pstmt,rs);
+			DBManager.close(conn, pstmt);
 			
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -48,38 +40,81 @@ public class BoardDao  {
 		
 	public void delete(int boardidx) {
 		String sql = "DELETE BOARD WHERE BOARDIDX = ?";
-		conn = DBManager.getConnection();
+		Connection conn = DBManager.getConnection();
 		try {
-			pstmt = conn.prepareStatement(sql);
+			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, boardidx);
 			pstmt.executeUpdate();
 			pstmt.close();
-			DBManager.close(conn, pstmt, rs);
+			DBManager.close(conn, pstmt);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-		
-
-	public List<BoardVo> list() {
-		String sql = "SELECT * FROM BOARD WHERE PSIDX= ?";
+	public BoardVo get(int boardidx) {
+		String sql = "SELECT ROWNUM RN, BOARDIDX, TITLE, CONT, CATEGORY, REGDATE, EMAIL, SCORE, PSIDX\r\n" + 
+				"FROM BOARD\r\n" + 
+				"WHERE BOARD IDX = ?";
 		BoardVo vo = null;
-		List<BoardVo> list = new ArrayList<>();
-		conn = DBManager.getConnection();
+		Connection conn = DBManager.getConnection();
 		try {
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, boardidx);
+			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				vo = new BoardVo();
-				int idx1 = 0;
-				vo.setBoardIdx(rs.getInt(++idx1));
-				vo.setTitle(rs.getString(++idx1));
-				vo.setCont(rs.getString(++idx1));
-				vo.setCate(rs.getInt(++idx1));
-				vo.setScore(rs.getInt(++idx1));
-				vo.setRedate(rs.getDate(++idx1));
-				vo.setEmail(rs.getString(++idx1));
-				vo.setPsIdx(rs.getInt(++idx1));
+				vo.setIdx(rs.getInt("BOARDIDX"));
+				vo.setTitle(rs.getString("TITLE"));
+				vo.setCont(rs.getString("CONT"));
+				vo.setCate(rs.getInt("CATEGORY"));
+				vo.setRegdate(Util.displyTime(rs.getTimestamp("REGDATE")));
+				vo.setEmail(rs.getString("EMAIL"));
+				if(vo.getCate() == 3) {
+					vo.setScore(rs.getInt("SCORE"));
+					vo.setPsIdx(rs.getInt("PSIDX"));
+				}
+			}
+			conn.close();
+			pstmt.close();
+			rs.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return vo;
+	
+	}
+
+	public List<BoardVo> list(String category, int from, int to) {
+		String sql = "SELECT * FROM (\r\n" + 
+				"    SELECT ROWNUM RN, BOARDIDX, TITLE, CONT, CATEGORY, REGDATE, EMAIL, SCORE, PSIDX \r\n" + 
+				"    FROM BOARD\r\n" + 
+				"    WHERE CATEGORY = ?\r\n" + 
+				"    AND ROWNUM <= ?\r\n" + 
+				")\r\n" + 
+				"WHERE RN >= ?";
+		BoardVo vo = null;
+		List<BoardVo> list = new ArrayList<>();
+		Connection conn = DBManager.getConnection();
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, category);
+			pstmt.setInt(2, to);
+			pstmt.setInt(3, from);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				vo = new BoardVo();
+				vo.setIdx(rs.getInt("BOARDIDX"));
+				vo.setTitle(rs.getString("TITLE"));
+				vo.setCont(rs.getString("CONT"));
+				vo.setCate(rs.getInt("CATEGORY"));
+				vo.setRegdate(Util.displyTime(rs.getTimestamp("REGDATE")));
+				vo.setEmail(rs.getString("EMAIL"));
+				if(category.equals("3")) {
+					vo.setScore(rs.getInt("SCORE"));
+					vo.setPsIdx(rs.getInt("PSIDX"));
+				}
+				list.add(vo);
 			}
 			conn.close();
 			pstmt.close();

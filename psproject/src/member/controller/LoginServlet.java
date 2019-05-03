@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import common.ConstPool;
-import member.service.MemberServiceImpl;
+import common.util.ConstPool;
+import member.dao.MemberDao;
 import member.vo.Member;
 
 @WebServlet("/login")
@@ -22,16 +22,20 @@ public class LoginServlet extends HttpServlet{
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String email = req.getParameter("email");
 		String pw = req.getParameter("pw");
-		Member vo =  MemberServiceImpl.getInstance().login(email,pw);
-		
-		if (vo ==null) { // 로그인 실패
-			resp.sendRedirect("login?massage=fail");
+		MemberDao dao = new MemberDao();
+		if(dao.isAuth(email)) {
+			Member vo =  dao.login(email,pw);
 			
-		}else if(vo!=null){ // 로그인 성공
-			HttpSession session = req.getSession();
-			session.setAttribute("member", vo);
-			resp.sendRedirect("index");
-			
+			if (vo ==null) { // 로그인 실패
+				resp.sendRedirect("login?message=fail");
+				
+			}else { // 로그인 성공
+				HttpSession session = req.getSession();
+				session.setAttribute("member", vo);
+				resp.sendRedirect("index");
+			}	
+		} else {
+			resp.sendRedirect("message?msg=notAuth&email="+email);
 		}
 	}
 }

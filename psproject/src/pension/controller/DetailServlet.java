@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import common.ConstPool;
+import common.util.ConstPool;
 import pension.dao.PensionDao;
 import pension.vo.ChargeVo;
 import pension.vo.PensionVo;

@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import common.ConstPool;
-import common.Pagination;
-import common.Util;
+import common.util.ConstPool;
+import common.util.Pagination;
+import common.util.Util;
 import pension.dao.PensionDao;
 import pension.vo.PensionVo;
 

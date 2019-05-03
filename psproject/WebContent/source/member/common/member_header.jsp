@@ -15,9 +15,11 @@
     <link rel="stylesheet" href="fonts/jua/css/jua.css">
     <link href="images/icon/favicon.ico" rel="icon">
     <!-- Theme Style -->
+    <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/index.css">
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/member.css">
+     <script src="js/jquery.my.plugin.js"></script> 
     <script src="js/member.js"></script>
     <title>NolDaGa &mdash; 놀다가</title>

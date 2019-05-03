@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import common.DBManager;
+import common.util.DBManager;
 import pension.vo.CartVo;
 import pension.vo.ChargeVo;
 import pension.vo.PensionVo;

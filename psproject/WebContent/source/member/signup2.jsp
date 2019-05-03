@@ -33,11 +33,11 @@
 					<div>
 					  	<h3>일반회원 가입 </h3>
 					  	<p >개인가입을 원하시면 선택해주세요.</p>
-					  	<a href="signup3_1"><button>가입하기</button></a>   
+					  	<a href="signup3?rating=0"><button>가입하기</button></a>   
 					</div><div>
 					 	<h3>기업회원 가입 </h3>
 					 	<p>기업가입을 원하시면 선택해주세요.</p>
-						<a href="signup3_2"><button>가입하기</button></a>
+						<a href="signup3?rating=1"><button>가입하기</button></a>
 					</div>
 				</div>
 			</div>

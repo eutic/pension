@@ -1,0 +1,9 @@
+@charset "UTF-8";
+.wrapper{width: 998px; margin: 0 auto; padding: 30px 0;}
+.wrapper .board-table{width: 100%;}
+.wrapper .board-table th {text-align: center; border-bottom: 1px solid #ddd; width: 50px;}
+.wrapper .board-table th + th {width: 648px;}
+.wrapper .board-table th + th  + th {width: 150px;}
+.wrapper .board-table th + th  + th + th{width: 150px;}
+
+.wrapper .board-table td {text-align: center; }

@@ -1,17 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <script>
-$(function() {
+/* $(function() {
     $('.header').on('click', '.search-toggle', function(e) {
       var selector = $(this).data('selector');
       $(selector).toggleClass('show').find('.search-input').focus();
       $(this).toggleClass('active');
       e.preventDefault();
-    });
-    $('.work').on('click',()=>{
+    }); */
+/*     $('.work').on('click',()=>{
     	alert("준비중입니다.")
     })
-  })
+  }) */
 </script>
 <header role="banner">
         <div class="top-bar">
