@@ -39,7 +39,7 @@ var oridx = "${dao.oridx}"
 		<div id="ex1" class="modal"></div>
 			<p><a href="#ex1" rel="modal:open" id="open"></a></p>
 				<div class="pensioninfo">
-					<img src="http://noldaga.shop/psproject/pension_img/${dao.oridx}/thumb.jpg">
+					<img src="${web_path}/${dao.oridx}/thumb.jpg">
 						<ul class="psinfo">
 							<li><h3>${dao.pstitle}</h3></li>
 							<li><h4>상세주소</h4></li>
@@ -58,9 +58,9 @@ var oridx = "${dao.oridx}"
 				<div class="info2">
 					<form name="form1" method="get" action="insert.do">
 						<input type="hidden" name="psidx" value="${dao.psidx}"> 
-						<input type="button" value="예약현황"> 
+						<!-- <input type="button" value="예약현황"> 
 						<input type="button" value="예약하기">
-						<input type="submit" value="장바구니 담기">
+						<input type="submit" value="장바구니 담기"> -->
 					</form>
 					</div>
 				</c:if>

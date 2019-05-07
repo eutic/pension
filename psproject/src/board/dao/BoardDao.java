@@ -15,13 +15,27 @@ public class BoardDao  {
 	
 	
 	
-	public void write() {
-		
+	public void write(BoardVo vo) {
+		String sql = "INSERT INTO BOARD ( BOARDIDX, TITLE, CONT, EMAIL) " + 
+				" VALUES (BOARD_SEQ.NEXTVAL, ?, ?, ?) ";
+		Connection conn= DBManager.getConnection();
+		try{
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			int idx = 0;
+			pstmt.setString(++idx, vo.getTitle());
+			pstmt.setString(++idx, vo.getCont());
+			pstmt.setString(++idx, vo.getEmail());
+			pstmt.executeUpdate();
+			DBManager.close(conn, pstmt);
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
 		
 	}
 
 	public void modify(BoardVo vo) {
-		String sql = "UPDATE BOARD SET BOARDTITLE = ?, BOARDCONT = ? WHERE BOARDIDX = ?";
+		String sql = "UPDATE BOARD SET TITLE = ?, CONT = ? WHERE BOARDIDX = ?";
 		Connection conn= DBManager.getConnection();
 		try{
 			PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -52,9 +66,9 @@ public class BoardDao  {
 		}
 	}
 	public BoardVo get(int boardidx) {
-		String sql = "SELECT ROWNUM RN, BOARDIDX, TITLE, CONT, CATEGORY, REGDATE, EMAIL, SCORE, PSIDX\r\n" + 
-				"FROM BOARD\r\n" + 
-				"WHERE BOARD IDX = ?";
+		String sql = "SELECT ROWNUM RN, BOARDIDX, TITLE, CONT, CATEGORY, REGDATE, EMAIL, SCORE, PSIDX " + 
+				"FROM BOARD " + 
+				"WHERE BOARDIDX = ? ";
 		BoardVo vo = null;
 		Connection conn = DBManager.getConnection();
 		try {

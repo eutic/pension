@@ -7,3 +7,17 @@
 .progress-icon-wrap a, .logo-text ~a{font-size: 30px;}
 
 .progress-icon {width: 55px; display: none;}
+.text-overflow{white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
+
+/* common */
+.content{width: 998px; margin: 0 auto; padding: 30px 0;}
+.content h1{text-align: center;}
+.content > div{width: 600px; margin: 0 auto;}
+.content button {width: 100%; border: 0; background: #f03539; border-radius: 5px; box-shadow: 0px 0px 3px 1px #ddd; cursor: pointer; color: #eee;}
+.join_step{margin:0 auto; padding:0; height:166px;}
+.join_step li{margin: 0 10px; padding-top:10px; border:1px solid; border-radius:50%; width:130px ; height: 130px; float:left; list-style: none; text-align: center;}
+.join_step p:first-child{margin-bottom: 12px; font-family: fantasy; text-decoration: underline;}
+.join_on{background-color: #f03539; color:white;}
+input::placeholder{opacity: .4;}
+
+html .width100{width: 100px;}

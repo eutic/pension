@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,16 +32,16 @@
 	}) */;
 </script>
 <body>
-<div class="wrap">
 	<jsp:include page="../header.jsp"></jsp:include>
+		<div class="wrap">
 	
 	<c:if test="${type != 5}">
 	<h5 id="formsearch1">경기도 전체 추천펜션</h5>
 	<hr id="hr">
-	<c:forEach var="row" items="${list}">
+<%-- 	<c:forEach var="row" items="${list}">
 		<div class="grid">
 			<figure class="effect-marley">
-				<img src="http://noldaga.shop/psproject/pension_img/${row.oridx}/thumb.jpg" alt="noldaga">
+				<img src="${web_path}/${row.oridx}/thumb.jpg" alt="noldaga">
 				<figcaption>
 					<h5><span>${row.pstitle}</span></h5>
 					<p>${row.preaddr}</p>
@@ -48,8 +49,29 @@
 				</figcaption>
 			</figure>
 		</div>
-	</c:forEach>
-	
+	</c:forEach> --%>
+	<div class="row blog-entries">
+			<div class="col-md-12 col-lg-12 main-content">
+				<div class="row">
+			<c:forEach var="i" items="${list}">
+				<div class="grid col-md-3">
+					<figure class="effect-marley">
+						<img src="${web_path}/${i.oridx}/thumb.jpg" alt="${i.pstitle}">
+						<div class="blog-content-body">
+							<figcaption class="post-meta">
+								<h5>
+									<span>${i.pstitle}</span>
+								</h5>
+								<p>${i.preaddr}<br>
+									<%-- <span class="price">최저가 : ${i.lowPrice}원</span> --%>
+								</p>
+								<a href="detail.do?psidx=${i.psidx}&startdate=2019-04-22">View more</a>
+							</figcaption>
+						</div>
+					</figure>
+				</div>
+			</c:forEach>
+			</div></div></div>
 	<hr>
 	<form name="form1" method="get" action="list.do" class="formsearch">
 		<div>
@@ -59,7 +81,7 @@
 			</select> 
 			<select name="search">
 				<option value="가평" >가평군</option>
-				<option> 춘천</option>
+				<option>춘천</option>
            		<option>강화도</option>
            		<option>광주시</option>
            		<option>남양주시</option>
@@ -103,14 +125,26 @@
 								<img src="${web_path}/${i.oridx}/thumb.jpg" alt="${i.pstitle }">
 								<div class="blog-content-body">
 									<figcaption class="post-meta">
-										<h5><span>${i.pstitle}</span></h5>
-										<p>${i.preaddr}<br><span class="price">최저가 : ${i.lowPrice}원</span></p>
+										<h5>
+											<span>${i.pstitle}</span>
+										</h5>
+										<p>${i.preaddr}<br>
+											<span class="price">최저가 : ${i.lowPrice}원</span>
+										</p>
 										<a href="detail.do?psidx=${i.psidx}&startdate=2019-04-22">View more</a>
 									</figcaption>
 								</div>
 							</figure>
 						</div>
 					</c:forEach>
+					<!-- GRID  갯수 채우기 -->
+							<c:forEach begin="1" end="${3-fn:length(items) mod 3}">
+							<div class="grid col-md-3">
+								<figure class="effect-marley"></figure>
+							</div>
+							</c:forEach>
+					
+					
 					<c:if test="${num==0}">
 						<div class="grid col-md-12">
 							<div class="tbox">

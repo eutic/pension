@@ -10,7 +10,7 @@ package common.util;
 
 public class ConstPool {
 	// 펜션 + 룸 이미지 경로
-	public static final String WEP_PATH = "http://noldaga.shop/psproject/pension_img/";
+	public static final String WEP_PATH = "http://noldaga.shop:9090/pension_img/";
 	public static final String SOURCE ="source";
 	public static final String MEMBER_PATH=SOURCE + "/member";
 	public static final String BOARD_PATH=SOURCE + "/board";

@@ -8,10 +8,7 @@
       $(this).toggleClass('active');
       e.preventDefault();
     }); */
-/*     $('.work').on('click',()=>{
-    	alert("준비중입니다.")
-    })
-  }) */
+
 </script>
 <header role="banner">
         <div class="top-bar">
@@ -26,7 +23,7 @@
                       <a href="#" class="search-toggle" data-selector="#header-3"></a>
                     </div>
                     <ul class="menu social">
-                      <li><a href="" class="work">고객센터</a></li>
+                      <li><a href="boardList" class="work">고객센터</a></li>
                       <c:if test="${member.email ==null}">
                       <li><a href="signup1">회원가입</a></li>
                       <li><a href="login">로그인</a></li>

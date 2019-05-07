@@ -45,7 +45,7 @@ public static PensionDao dao = new PensionDao();
 	
 
 	public List<PensionVo> readList() {
-		String sql = "select  PSURL,PSTITLE,preaddr,psidx,oridx from  PENSION " + " WHERE ROWNUM < 9 "
+		String sql = "select  PSTITLE,preaddr,psidx,oridx from  PENSION " + " WHERE ROWNUM < 10 "
 				+ " order by ORIDX  ";
 		Connection conn;
 		PreparedStatement pstmt;
@@ -60,11 +60,10 @@ public static PensionDao dao = new PensionDao();
 
 			while (rs.next()) {
 				vo = new PensionVo();
-				vo.setPsurl(rs.getString(1));
-				vo.setPstitle(rs.getString(2));
-				vo.setPreaddr(rs.getString(3));
-				vo.setPsidx(rs.getInt(4));
-				vo.setOridx(rs.getString(5));
+				vo.setPstitle(rs.getString(1));
+				vo.setPreaddr(rs.getString(2));
+				vo.setPsidx(rs.getInt(3));
+				vo.setOridx(rs.getString(4));
 				list.add(vo);
 
 			}

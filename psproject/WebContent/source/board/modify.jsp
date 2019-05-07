@@ -11,28 +11,25 @@
 	<div class="wrap">
 	<div class="wrapper"> 
 		<h1>공지사항</h1>
-		<table class="board-table content">
-			<tr>
-				<th>번호</th>
+		<form method="post">
+		<input type="hidden" name="idx" value="${vo.idx}">
+		<table class="board-view-table content">
+			<tr class="inputRow">
 				<th>제목</th>
-				<th>작성자</th>
-				<th>작성일</th>
+				<td colspan="3">
+					<input type="text" name="title" value="${vo.title}">${vo.title}
+				</td>
 			</tr>
-			<c:forEach items="${list}" var="board">
- 			<tr>
-				<td>${board.idx}</td>
-				<td class="text-overflow"><a href="boardView?idx=${board.idx}">${board.title}</a></td>
-				<td>${fn:substringBefore(board.email,'@')}</td>
-				<td>${board.regdate}</td> 
-				
+			<tr>	
+				<td colspan="4"><textarea name="cont">${vo.cont}</textarea></td>
 			</tr>
-			</c:forEach>
-			<c:if test="${member.rating=='2'}">
 			<tr>
-				<td colspan="4"><a href="boardWrite"><button class="width100">작성</button></a></td>
+				<td colspan="4">
+					<button class="btn btn-primary width100">반영</button>
+				</td>
 			</tr>
-			</c:if>
 		</table>
+		</form>
 	</div>	
 	</div>    
     <jsp:include page="../footer.jsp"/>
