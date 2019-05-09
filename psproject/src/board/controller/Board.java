@@ -14,18 +14,19 @@ import board.vo.BoardVo;
 import common.util.ConstPool;
 import common.util.Pagination;
 import common.util.Util;
+
 @WebServlet("/boardList")
-public class Board extends HttpServlet{
+public class Board extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		String category = Util.getParameterNumber(req.getParameter("cate")) +"";
+		String category = Util.getParameterNumber(req.getParameter("cate")) + "";
 		Pagination pagination = new Pagination(20, 10, 300, 1);
 		List<BoardVo> list = new BoardDao().list(category, pagination.getFrom(), pagination.getTo());
-//		System.out.println(list);
+
+		System.out.println(list);
 		req.setAttribute("list", list);
-		req.getRequestDispatcher(ConstPool.BOARD_PATH+"/list.jsp").forward(req, resp);;
+		req.getRequestDispatcher(ConstPool.BOARD_PATH +"/list.jsp").forward(req, resp);
 	}
-	
+
 }

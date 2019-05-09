@@ -97,16 +97,94 @@ var oridx = "${dao.oridx}"
 				<h3 id="anchorCancel">이용 약관 및 취소 안내</h3>
 					<jsp:include page="Pensioncancel.jsp"></jsp:include>
 				
-				<h3>후기</h3>
-					<div id="anchorReview">
-						<ul>
-							<li>리뷰들</li>
-							<li>리뷰들</li>
-							<li>리뷰들</li>
-						</ul>
-					</div>
-			</div>
+				<h3 id="anchorReview">후기</h3>
+				<div class="review">
+					<div class="review-overall"></div>
+					<div class="review-detail"></div>
+				</div>
+		<script>
+		var psidx = '${dao.psidx}';
 		
+		function makeStarHtml(number) {
+			var span = $("<span>");
+			for(var i=0; i < 5; i++){
+				span.append($("<i>").addClass("fa fa-lg fa-star").css("color", number >= i+1 ? "#fc0" : "#ccc"));
+			}
+			return span.html();
+			
+		}
+		
+		function showList(){
+			$.ajax({
+				 url : 'reviewOverall?psidx=' + psidx,
+				 success : function(data) {
+					console.log(data);
+					var str = "<h4>평점";
+					var avg = data.avg;
+					for(var i = 0; i<5; i++) {
+						if(avg > 1){
+							s = 'fa-star';
+						}
+						else if (avg > 0){
+							s = 'fa-star-half-o';
+						}
+						else{
+							s = 'fa-star-o';
+						}
+						avg--;
+						str +="<i class='fa fa-lg "+ s + "'></i>";
+					}
+					str +="<br>"+data.avg + "</h4>";
+					$(".review-overall").html(str);
+					
+					str ="";
+					for(var i = 0; i <5; i++){
+						str ="<div class='clearfix'><div class='float-left'>";
+						for(var j = 0; j < 5; j++){
+							if(i + j <= 4 ){
+								str+='<i class = "fa fa-lg fa-star" style="color:#fc0;"></i>';
+							} 
+							else {
+								str+='<i class = "fa fa-lg fa-star" style="color:#ccc;"></i>';
+							}
+						}
+						str +="</div><div class='progress float-right'>";
+						str +="<div class='progress-bar' style='width:";
+						str += data.score[i] / data.cnt *100+"%'>" + (data.score[i] == 0 ? '' : data.score[i]);
+						str += "</div></div></div>";
+					}
+					$(".review-overall").html(function(i,html){
+						return html + str;
+					});
+				}
+			}).done(function(){
+				$.ajax({
+					url : 'listReview?psidx=' + psidx,
+					success : function(data) {
+						var str = "";
+						for(var i in data) {
+							str += "<li>";
+							str += "<div><h5>"+ data[i].title + "</h5>";
+							str += "<p>" + data[i].cont + "</p>";
+							str += "<p class='small'>" + data[i].email + " | "+ data[i].regdate + " | ";
+							
+							str += makeStarHtml(data[i].score);
+							
+							str += "</p></div>";
+							str += "<div><img src='' alt='이미지들어가는곳'></div>";
+							str += "</li>";
+						}
+						str +="</ul>";
+						$('.review-detail').html(str);
+						}
+					})
+			});
+		};
+			$(function() {
+				showList();
+			})
+		</script>
+		</div>
 	</div>
 <jsp:include page="../footer.jsp"></jsp:include>
 </body>

@@ -78,4 +78,19 @@ figure.effect-marley:hover h5::after, figure.effect-marley:hover p { opacity: 1;
 .bx-wrapper .bx-prev:hover, .bx-wrapper .bx-prev:focus {background-position-y: -32px;}
 
 
+/* review  */
+
+.review ul {padding: 0; margin: 0; list-style: none;}
+.review ul li {border-bottom: 2px solid #ddd;}
+.review ul div {display: inline-block;}
+.review ul div:first-child {width: 80%; padding: 15px;}
+.review ul div:last-child {width: 20%;}
+.review ul li p {margin: 0;}
+
+.review-overall {width: 300px; margin: 0 auto; text-align: center;}
+.review-overall h4 {margin-bottom: 30px;}
+.review-overall i {color: fc0;}
+.review-overall .progress {width: 50%; height: 20px; margin-left: 20px;}
+.review-overall .progress-bar {background: #7ec378;}
+.review-overall > div.clearfix {display: flex; align-items: center; }
 

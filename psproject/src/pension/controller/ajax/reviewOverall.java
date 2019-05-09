@@ -1,4 +1,4 @@
-package board.controller;
+package pension.controller.ajax;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,25 +9,23 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+import com.sun.xml.internal.fastinfoset.sax.Properties;
+
 import board.dao.BoardDao;
 import board.vo.BoardVo;
-import common.util.ConstPool;
 import common.util.Pagination;
 import common.util.Util;
-import member.vo.Member;
 
-@WebServlet("/boardRemove")
-public class BoardRemove extends HttpServlet {
+@WebServlet("/reviewOverall")
+public class reviewOverall extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		if (req.getSession() != null && req.getSession().getAttribute("member") != null
-				&& ((Member) req.getSession().getAttribute("member")).getRating() == 2) {
-			int boardIdx = Util.getParameterNumber(req.getParameter("idx"));
-
-			new BoardDao().delete(boardIdx);
-		}
-		resp.sendRedirect("boardList");
+		int psidx = Util.getParameterNumber(req.getParameter("psidx"));
+		resp.setContentType("application/json; charset=utf-8");
+		resp.getWriter().print(new Gson().toJson(new BoardDao().reviewOverall(psidx)));
 	}
+	
 
 }

@@ -113,6 +113,17 @@ public class Util {
 	        }
 	        return 0;
 	    }
+	public static String displayTime(Timestamp timestamp) {
+		long gap = new Date().getTime() - timestamp.getTime();
+		SimpleDateFormat sdf = null;
+		if (gap < 1000 * 60 * 60 * 24) {
+			sdf = new SimpleDateFormat("hh:mm:ss");
+		} else {
+			sdf = new SimpleDateFormat("yy-MM-dd");
+		}
+		return sdf.format(new Date(timestamp.getTime()));
+
+	}
     
 }
 class MyAuthentication extends Authenticator {
